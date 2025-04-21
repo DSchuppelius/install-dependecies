@@ -52,7 +52,7 @@ for cfg in "${CONFIG_FILES[@]}"; do
             echo "  apt fehlgeschlagen – versuche pip3 install $pip_pkg"
             sudo pip3 install "$pip_pkg"
           else
-            echo "⚠️  $package nicht verfügbar"
+            echo "!!!  $package nicht verfügbar !!!"
           fi
         fi
       fi
