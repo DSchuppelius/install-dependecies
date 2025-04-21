@@ -2,8 +2,6 @@
 # install-dependencies.sh
 # Liest alle *executables.json in config/, installiert Pakete & JARs
 # und startet rekursiv weitere install‑dependencies‑Skripte in vendor/.
-# Liest alle *executables.json in config/, installiert Pakete & JARs
-# und startet rekursiv weitere install‑dependencies‑Skripte in vendor/.
 
 set -euo pipefail
 
@@ -22,14 +20,11 @@ export INSTALL_DEPS_RUNNING=1
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG_DIR="${CONFIG_DIR:-$SCRIPT_DIR/../config}"      # override möglich
 JQ=$(command -v jq) || { echo "jq nötig – sudo apt install jq"; exit 1; }
-CONFIG_DIR="${CONFIG_DIR:-$SCRIPT_DIR/../config}"      # override möglich
-JQ=$(command -v jq) || { echo "jq nötig – sudo apt install jq"; exit 1; }
 
 ###############################################################################
 # 2 – Alle *executables.json einsammeln
 ###############################################################################
 mapfile -t CONFIG_FILES < <(find "$CONFIG_DIR" -maxdepth 1 -name '*executables.json' -type f | sort)
-if ((${#CONFIG_FILES[@]}==0)); then
 if ((${#CONFIG_FILES[@]}==0)); then
   echo "Keine executables.json‑Dateien in $CONFIG_DIR gefunden."
   exit 1
@@ -39,7 +34,6 @@ echo "Gefundene Konfig‑Dateien:"
 printf '  • %s\n' "${CONFIG_FILES[@]}"
 
 ###############################################################################
-# 3 – Pakete (apt) installieren
 # 3 – Pakete (apt) installieren
 ###############################################################################
 declare -A SEEN_PKG
@@ -68,7 +62,6 @@ done
 
 ###############################################################################
 # 4 – Java‑Executables herunterladen
-# 4 – Java‑Executables herunterladen
 ###############################################################################
 declare -A SEEN_JAR
 for cfg in "${CONFIG_FILES[@]}"; do
@@ -78,18 +71,15 @@ for cfg in "${CONFIG_FILES[@]}"; do
     SEEN_JAR["$target"]=1
     if [[ ! -f "$target" ]]; then
       echo "Lade $url → $target ..."
-      echo "Lade $url → $target ..."
       sudo curl -L -o "$target" "$url"
       sudo chmod +x "$target"
     else
-      echo "$target bereits vorhanden"
       echo "$target bereits vorhanden"
     fi
   done
 done
 
 ###############################################################################
-# 5 – weitere install‑dependencies.sh in vendor/ ausführen
 # 5 – weitere install‑dependencies.sh in vendor/ ausführen
 ###############################################################################
 # 5.1  Projekt‑Root ermitteln → steige solange nach oben, bis ein vendor/-Ordner
@@ -98,14 +88,11 @@ ROOT="$SCRIPT_DIR"
 while [[ "$ROOT" != "/" && ! -d "$ROOT/vendor" ]]; do
   ROOT="$(dirname "$ROOT")"
 done
-  echo "Suche in $ROOT nach vendor/ ..."
 
 VENDOR_DIR="$ROOT/vendor"
 if [[ -d "$VENDOR_DIR" ]]; then
   echo "Suche in $VENDOR_DIR nach weiteren install‑dependencies‑Skripten ..."
-  echo "Suche in $VENDOR_DIR nach weiteren install‑dependencies‑Skripten ..."
   while IFS= read -r other_script; do
-    # Eigene Datei überspringen
     # Eigene Datei überspringen
     if [[ "$(realpath "$other_script")" != "$(realpath "$SCRIPT_DIR/install-dependencies.sh")" ]]; then
       echo "──────────────────────────────────────────────────────────────"
