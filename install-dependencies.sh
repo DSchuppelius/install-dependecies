@@ -10,7 +10,6 @@ set -euo pipefail
 ###############################################################################
 if [[ -n "${INSTALL_DEPS_RUNNING:-}" ]]; then
   exit 0
-  exit 0
 fi
 export INSTALL_DEPS_RUNNING=1
 
